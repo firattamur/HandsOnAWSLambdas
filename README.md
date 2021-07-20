@@ -1,15 +1,15 @@
 <h3 align="center">
-	Title
+7 Days Of AWS Lambdas
 </h3>
 
 <!-- badges -->
 <p align="center">
 
 <!-- language -->
-<img src="https://img.shields.io/badge/Julia-1.6.1-blue" alt="Julia: 1.6.1">
+<img src="https://img.shields.io/badge/-AWS-orange" alt="AWS">
 
 <!-- inprogress or completed -->
-<img src="https://img.shields.io/badge/-completed-green" alt="completed">
+<!-- <img src="https://img.shields.io/badge/-completed-green" alt="completed"> -->
 	
 <!-- inprogress or completed -->
 <img src="https://img.shields.io/badge/-in%20progress-red" alt="in progress">
@@ -20,12 +20,12 @@
 </a>
 	
 <!-- week of year -->
-<img src="https://img.shields.io/badge/week-0-green" alt="in progress">
+<img src="https://img.shields.io/badge/week-29-green" alt="in progress">
 
 </p>
 
 <h4 align="center">
-Project Description
+Learn fundamentals of AWS Lambdas and Practice with examples.
 </h4>
 
 <h3>
@@ -40,11 +40,11 @@ print("Hello, Github")
 Goals:
 </h3><hr>
 
-- [ ] Create an awesome repository.
-- [x] Create an awesome readme.
+- [ ] Learn fundamentals of AWS Lambdas.
+- [ ] Build a project contains AWS services S3, DynamoDB and Lambdas. 
 
 <h3>
 References:
 </h3><hr>
 
-1. [Reference]()
+1. [AWS Lambda and the Serverless Framework](https://www.udemy.com/course/aws-lambda-serverless/)
