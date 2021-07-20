@@ -29,11 +29,29 @@ Learn fundamentals of AWS Lambdas and Practice with examples.
 </h4>
 
 <h3>
-Usage:
+Notes:
 </h3><hr>
 
-```python
-print("Hello, Github")
+```properties
+
+# sls is shortening for serverless
+# create a lambda project 
+sls
+
+# deploy lambda
+# -v -> verbose prints events during deployment
+sls deploy -v
+
+# deploy only function instead of whole stack
+sls deploy function -f hello
+
+# invoke lambda by function name 'hello' 
+# -l -> logs function call
+sls invoke -f hello -l 
+
+# remove lambda from aws
+sls remove
+
 ```
 
 <h3>
