@@ -1,0 +1,276 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "HelloDashenvDashftLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/python-env-variables-dev-hello-env-ft"
+      }
+    },
+    "HelloDashenvDashftDashupdateLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/python-env-variables-dev-hello-env-ft-update"
+      }
+    },
+    "IamRoleLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "python-env-variables",
+                  "dev",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/python-env-variables-dev*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/python-env-variables-dev*:*:*"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "python-env-variables",
+              "dev",
+              {
+                "Ref": "AWS::Region"
+              },
+              "lambdaRole"
+            ]
+          ]
+        }
+      }
+    },
+    "HelloDashenvDashftLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/python-env-variables/dev/1627047421710-2021-07-23T13:37:01.710Z/python-env-variables.zip"
+        },
+        "Handler": "handler.hello",
+        "Runtime": "python3.8",
+        "FunctionName": "python-env-variables-dev-hello-env-ft",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "variable1": "value1",
+            "variable2": "value2",
+            "firstName": "firat"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "HelloDashenvDashftLogGroup"
+      ]
+    },
+    "HelloDashenvDashftDashupdateLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/python-env-variables/dev/1627047421710-2021-07-23T13:37:01.710Z/python-env-variables.zip"
+        },
+        "Handler": "handler.hello",
+        "Runtime": "python3.8",
+        "FunctionName": "python-env-variables-dev-hello-env-ft-update",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "variable1": "value1",
+            "variable2": "value2",
+            "firstName": "tamur"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "HelloDashenvDashftDashupdateLogGroup"
+      ]
+    },
+    "HelloDashenvDashftLambdaVersionZgW0EsvTI8oe4HPoRPmHPIRM2sN3I5mNEqvvEW0NRw": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "HelloDashenvDashftLambdaFunction"
+        },
+        "CodeSha256": "GTsW5Or6j8l6RvilfxirZtA/2b3rlluc2E0foheY5YA="
+      }
+    },
+    "HelloDashenvDashftDashupdateLambdaVersionrvfI3iZ5rFRC2E038nhNO9bBNtBfxkUhoP8j1LBToY": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "HelloDashenvDashftDashupdateLambdaFunction"
+        },
+        "CodeSha256": "GTsW5Or6j8l6RvilfxirZtA/2b3rlluc2E0foheY5YA="
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      },
+      "Export": {
+        "Name": "sls-python-env-variables-dev-ServerlessDeploymentBucketName"
+      }
+    },
+    "HelloDashenvDashftLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "HelloDashenvDashftLambdaVersionZgW0EsvTI8oe4HPoRPmHPIRM2sN3I5mNEqvvEW0NRw"
+      },
+      "Export": {
+        "Name": "sls-python-env-variables-dev-HelloDashenvDashftLambdaFunctionQualifiedArn"
+      }
+    },
+    "HelloDashenvDashftDashupdateLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "HelloDashenvDashftDashupdateLambdaVersionrvfI3iZ5rFRC2E038nhNO9bBNtBfxkUhoP8j1LBToY"
+      },
+      "Export": {
+        "Name": "sls-python-env-variables-dev-HelloDashenvDashftDashupdateLambdaFunctionQualifiedArn"
+      }
+    }
+  }
+}
