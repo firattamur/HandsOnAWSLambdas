@@ -1,9 +1,10 @@
 import json
-
+import time
 
 def hello(event, context):
     
-    print("First Lambda Function")
-    print("Updated with -> sls deploy function -f hello -> it will just update function not entire stack.")
+    print("Sleeping for 4 seconds!")
+    time.sleep(4)
+    print("Done.")
 
     return "Lambdas are Great!"

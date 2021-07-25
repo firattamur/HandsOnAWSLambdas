@@ -1,0 +1,410 @@
+{
+  "service": {
+    "service": "hello-world-python",
+    "serviceObject": {
+      "name": "hello-world-python"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "python2.7",
+      "lambdaHashingVersion": "20201221",
+      "profile": "serverless-coloringgames-agent",
+      "region": "us-east-2",
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "HelloDashshortDashtimeoutLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/hello-world-python-dev-hello-short-timeout"
+            }
+          },
+          "HelloDashlongDashtimeoutLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/hello-world-python-dev-hello-long-timeout"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "hello-world-python",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-python-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-python-dev*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "hello-world-python",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "HelloDashshortDashtimeoutLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/hello-world-python/dev/1627046132126-2021-07-23T13:15:32.126Z/hello-world-python.zip"
+              },
+              "Handler": "handler.hello",
+              "Runtime": "python2.7",
+              "FunctionName": "hello-world-python-dev-hello-short-timeout",
+              "MemorySize": 128,
+              "Timeout": 3,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "HelloDashshortDashtimeoutLogGroup"
+            ]
+          },
+          "HelloDashlongDashtimeoutLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/hello-world-python/dev/1627046132126-2021-07-23T13:15:32.126Z/hello-world-python.zip"
+              },
+              "Handler": "handler.hello",
+              "Runtime": "python2.7",
+              "FunctionName": "hello-world-python-dev-hello-long-timeout",
+              "MemorySize": 256,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "HelloDashlongDashtimeoutLogGroup"
+            ]
+          },
+          "HelloDashshortDashtimeoutLambdaVersion5BIRrFNIkzx14zjhteLLgXEo3CsIAGSR87DxKeN8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "HelloDashshortDashtimeoutLambdaFunction"
+              },
+              "CodeSha256": "J7vRr5FgH6rIiW/FG6smWsFV5MM+l3wQzGNVUbYUUP4="
+            }
+          },
+          "HelloDashlongDashtimeoutLambdaVersioneFGeKcth9iMrEd6zgSBnWn4xvGCHuZKwh7x85IJCso": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "HelloDashlongDashtimeoutLambdaFunction"
+              },
+              "CodeSha256": "J7vRr5FgH6rIiW/FG6smWsFV5MM+l3wQzGNVUbYUUP4="
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            },
+            "Export": {
+              "Name": "sls-hello-world-python-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "HelloDashshortDashtimeoutLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "HelloDashshortDashtimeoutLambdaVersion5BIRrFNIkzx14zjhteLLgXEo3CsIAGSR87DxKeN8"
+            },
+            "Export": {
+              "Name": "sls-hello-world-python-dev-HelloDashshortDashtimeoutLambdaFunctionQualifiedArn"
+            }
+          },
+          "HelloDashlongDashtimeoutLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "HelloDashlongDashtimeoutLambdaVersioneFGeKcth9iMrEd6zgSBnWn4xvGCHuZKwh7x85IJCso"
+            },
+            "Export": {
+              "Name": "sls-hello-world-python-dev-HelloDashlongDashtimeoutLambdaFunctionQualifiedArn"
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "hello-short-timeout": {
+        "handler": "handler.hello",
+        "memorySize": 128,
+        "timeout": 3,
+        "events": [],
+        "name": "hello-world-python-dev-hello-short-timeout",
+        "package": {},
+        "memory": 128,
+        "runtime": "python2.7",
+        "vpc": {},
+        "versionLogicalId": "HelloDashshortDashtimeoutLambdaVersion5BIRrFNIkzx14zjhteLLgXEo3CsIAGSR87DxKeN8"
+      },
+      "hello-long-timeout": {
+        "handler": "handler.hello",
+        "memorySize": 256,
+        "timeout": 6,
+        "events": [],
+        "name": "hello-world-python-dev-hello-long-timeout",
+        "package": {},
+        "memory": 256,
+        "runtime": "python2.7",
+        "vpc": {},
+        "versionLogicalId": "HelloDashlongDashtimeoutLambdaVersioneFGeKcth9iMrEd6zgSBnWn4xvGCHuZKwh7x85IJCso"
+      }
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless.yml",
+    "initialServerlessConfig": {
+      "service": {
+        "$ref": "$[\"service\"][\"serviceObject\"]"
+      },
+      "frameworkVersion": "2",
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      }
+    },
+    "layers": {},
+    "isDashboardMonitoringPreconfigured": false,
+    "artifact": "/Users/firattamur/Desktop/7DaysOfAWSLambdas/lambdas/hello-world-python/.serverless/hello-world-python.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/hello-world-python/dev/1627046132126-2021-07-23T13:15:32.126Z",
+    "artifact": "hello-world-python.zip"
+  }
+}
