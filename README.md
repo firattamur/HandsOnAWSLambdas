@@ -58,7 +58,7 @@ sls remove
 Goals:
 </h3><hr>
 
-- [ ] Learn fundamentals of AWS Lambdas.
+- [X] Learn fundamentals of AWS Lambdas.
 - [ ] Build a project contains AWS services S3, DynamoDB and Lambdas. 
 
 <h3>
