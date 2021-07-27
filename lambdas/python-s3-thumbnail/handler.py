@@ -13,15 +13,11 @@ format = "PNG"
 PILImage: TypeAlias = "PIL.JpegImagePlugin.JpegImageFile"
 
 def handler(event, context):
-
-    print(event)
     
     # get bucket name and image key 
     bucket = event["Records"][0]["s3"]["bucket"]["name"]
     key = event["Records"][0]["s3"]["object"]["key"]
     region = event["Records"][0]["awsRegion"]
-
-    print(f"Bucket: {bucket} - Key: {key}")
 
     if "thumbnail.png" in key:
         return "This is a thumbnail!"
@@ -45,8 +41,6 @@ def get_image_from_s3(bucket: str, key: str) -> PILImage:
     
     response = s3.get_object(Bucket=bucket, Key=key)
 
-    print(f"response: {response}")
-
     imageContent = response["Body"].read()
 
     imageFile = BytesIO(imageContent)
@@ -59,7 +53,7 @@ def create_thumbnail(image: PILImage) -> PILImage:
     return ImageOps.fit(image, (size, size), Image.ANTIALIAS)
 
 
-def create_thumbnail_key(key: str):
+def create_thumbnail_key(key: str) -> str:
     return key.replace(".png", "_thumbnail.png")
 
 
@@ -80,10 +74,7 @@ def upload_thumbnail_to_s3(bucket: str, thumbnail_key: str, thumbnail: PILImage,
         ContentType='image/png',
         Key=thumbnail_key
     )
-
-    print(response)
-
-    # https://firattamur-s3-thumbnail-bucket-2.s3.us-east-2.amazonaws.com/rick_and_morty+3.png
+    
     url = f"https://{bucket}.s3.{region}.amazonaws.com/{thumbnail_key}"
     
     return url
