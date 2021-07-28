@@ -1,5 +1,5 @@
 <h3 align="center">
-7 Days Of AWS Lambdas
+Hands On AWS Lambdas
 </h3>
 
 <!-- badges -->
